@@ -36,7 +36,6 @@ class ChatPage extends HTMLElement {
   messages: Message[] = [];
 
   addListener() {
-    // const form = this.shadowRoot.querySelector(".submit-message");
     const form = this.shadowRoot.querySelector(".submit-message");
 
     console.log("form: ", form);
@@ -47,16 +46,13 @@ class ChatPage extends HTMLElement {
       //como la clase es -
       //se la paso entre []
       //en vez de e.target.new-message, le digo e.target['new-message']
-      console.log(
-        "e.target['new-message'].value: ",
-        target["new-message"].value
-      );
-      // console.log(
-      //   "e.target['new-message'].value: ",
+      console.log("target: ", target);
+
+      console.log("e.target['new-message'].value: ", target[0].value);
 
       //   );
       //Le doy al state el mensaje del chat
-      state.pushMessage(target["new-message"].value);
+      state.pushMessage(target[0].value);
     });
   }
   //map() = devuelve la lista de elementos originales transformada
@@ -84,7 +80,7 @@ class ChatPage extends HTMLElement {
                 .join("")}
           </div>
 
-          <form class="form">
+          <form class="submit-message">
               <input type="text">
               <button>Enviar</button>
           </form>
@@ -153,7 +149,7 @@ class ChatPage extends HTMLElement {
       `;
 
     shadow.appendChild(div);
-    // shadow.appendChild(style);
+    shadow.appendChild(style);
 
     //cada vez que se redibuje toda la pantalla vuelvo a escuchar
     //los listeners

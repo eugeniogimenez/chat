@@ -29,16 +29,14 @@ const state = {
     //escuchamos si hay algun cambio en el chat.
     chatroomsRef.on("value", (snapshot) => {
       const messageFromServer = snapshot.val();
-      console.log("messageFromServer: ", messageFromServer);
-      console.log(
-        "messageFromServer.messages.message: ",
-        messageFromServer.messages.message
-      );
+      console.log("messageFromServer.messages: ", messageFromServer.messages);
 
-      // console.log(
-      //   "messageFromServer.general desde State.init(): ",
-      //   messageFromServer.general
-      // );
+      for (const i in messageFromServer.messages) {
+        console.log(
+          "messageFromServer.messages[i].message ",
+          messageFromServer.messages[i].message
+        );
+      }
       //Cada vez que en el Server haya un cambio en .general
       //actualizamos el state
 
@@ -99,7 +97,7 @@ const state = {
   },
 
   subscribe(callback: (any) => any) {
-    console.log("soy state.subscribe()");
+    console.log("soy state.subscribe() y mi callback es: ", callback);
 
     this.listeners.push(callback);
   },
