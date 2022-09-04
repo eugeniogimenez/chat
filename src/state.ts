@@ -1,5 +1,5 @@
 import { rtdb } from "./rtdb";
-import map from "lodash";
+import _ from "lodash";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -29,21 +29,29 @@ const state = {
     //escuchamos si hay algun cambio en el chat.
     chatroomsRef.on("value", (snapshot) => {
       const messageFromServer = snapshot.val();
-      console.log("messageFromServer.messages: ", messageFromServer.messages);
+      console.log(
+        "En init(), messageFromServer.messages: ",
+        messageFromServer.messages
+      );
 
-      for (const i in messageFromServer.messages) {
-        console.log(
-          "messageFromServer.messages[i].message ",
-          messageFromServer.messages[i].message
-        );
-      }
+      // for (const i in messageFromServer.messages) {
+      //   console.log(
+      //     "messageFromServer.messages[i].message ",
+      //     messageFromServer.messages[i].message
+      //   );
+      // }
       //Cada vez que en el Server haya un cambio en .general
       //actualizamos el state
 
-      const messagesList = map(messageFromServer.messages);
-      currentState.messages = messagesList;
+      const messagesList = _.map(messageFromServer.messages);
+      console.log("En init(), messagesList: ", messagesList);
+      // map(messageFromServer.messages, (i) => {
+      //   return console.log(i.messages);
+      // });
+      currentState.messages = messagesList; //los mensajes del servidor van a ser los mios
 
-      console.log("currentState: ", currentState);
+      console.log("En init(), currentState: ", currentState);
+      // console.log("En init(), messagesList: ", messagesList);
       this.setState(currentState);
     });
   },
@@ -69,7 +77,7 @@ const state = {
   //Le manda al Backend el mensaje nuevo
   //La rtdb
   //Mezclo un dato nuevo, el message, con un dato que tenia: nombre.
-  pushMessage(message: string) {
+  pushMessage(message: string, callback) {
     console.log("soy state.pushMessage(message), y mi mensaje es: ", message);
 
     const nombreQueGuardeEnElState = this.data.nombre;
@@ -83,6 +91,8 @@ const state = {
         message: message,
       }),
     });
+
+    callback ? callback() : false;
   },
   ///
 

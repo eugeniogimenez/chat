@@ -1,5 +1,5 @@
 //importo state
-import { addListener } from "process";
+
 import { state } from "../state";
 
 type Message = {
@@ -14,31 +14,44 @@ class ChatPage extends HTMLElement {
   //El elemento es creado, pero el navegador aún no procesó ni asignó atributos
   //en este estado, entonces las llamadas a getAttribute devolverían null.
   //Así que no podemos renderizar (construirlo) ahora.
-  connectedCallback() {
-    state.subscribe(() => {
-      const currentState = state.getState();
-
-      //los mensajes del chat, van a ser los guardados en el state.
-      this.messages = currentState.messages;
-
-      //cuando ya tenemos los mensajes actualizados,
-      //los renderizamos (construimos) again
-      //pero esta vez, con datos actuailzados.
-      this.render();
-    });
-
-    this.render();
-  }
 
   //creo una variable (array de objetos) para engancharme al state (los cambios)
   //cada vez que haya mensajes, los guardo acá, en el messages.
   // tiene que arrancar con un array vacio para que no falle.
+  shadow: ShadowRoot;
   messages: Message[] = [];
+  connectedCallback() {
+    console.log("CHAAAAAATTTTT");
+
+    this.shadow = this.attachShadow({ mode: "open" });
+    // const currentState = state.getState();
+
+    // //los mensajes del chat, van a ser los guardados en el state.
+    // this.messages = currentState.messages;
+    // console.log("currentState.messages: ", currentState.messages);
+
+    //cuando ya tenemos los mensajes actualizados,
+    //los renderizamos (construimos) again
+    //pero esta vez, con datos actuailzados.
+
+    // this.render();
+    state.subscribe(() => {
+      const currentState = state.getState();
+      this.messages = currentState.messages;
+      this.shadow.firstChild?.remove();
+      this.render();
+    });
+
+    // this.shadow.firstChild?.remove();
+    this.render();
+  }
 
   addListener() {
-    const form = this.shadowRoot.querySelector(".submit-message");
+    console.log("EN EL chat.addListener()");
 
-    console.log("form: ", form);
+    const currentState = state.getState();
+
+    const form = this.shadow.querySelector(".submit-message");
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -46,20 +59,32 @@ class ChatPage extends HTMLElement {
       //como la clase es -
       //se la paso entre []
       //en vez de e.target.new-message, le digo e.target['new-message']
-      console.log("target: ", target);
-
-      console.log("e.target['new-message'].value: ", target[0].value);
 
       //   );
       //Le doy al state el mensaje del chat
-      state.pushMessage(target[0].value);
+
+      state.pushMessage(target["new-message"].value, () => {
+        console.log("MENSAJE PUSHEADO");
+        console.log("this.messages: ", this.messages);
+        console.log("currentState.messages: ", currentState.messages);
+
+        // if (this.messages.length == currentState.messages.length) {
+        //   this.shadow.removeChild(this.shadow.children["new-message"]);
+        // }
+
+        if (this.shadow) {
+          this.shadow.firstChild.remove();
+
+          // this.render();
+        }
+      });
     });
   }
   //map() = devuelve la lista de elementos originales transformada
   render() {
-    const shadow = this.attachShadow({ mode: "open" });
     const div = document.createElement("div");
     const style = document.createElement("style");
+    div.className = "chat";
 
     div.innerHTML = `
     <div class="home">
@@ -81,7 +106,7 @@ class ChatPage extends HTMLElement {
           </div>
 
           <form class="submit-message">
-              <input type="text">
+              <input type="text" name='new-message'>
               <button>Enviar</button>
           </form>
         </div>
@@ -110,6 +135,7 @@ class ChatPage extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          margin: 0 auto;
         }
   
         .home_header {
@@ -129,10 +155,16 @@ class ChatPage extends HTMLElement {
         }
 
         .messages{
-          border: solid;
           background-color: red;
-          height: 100px;
+          margin: 0 auto;
+          width: 100%;
+        }
 
+        .submit-message{
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
   
         input {
@@ -148,8 +180,8 @@ class ChatPage extends HTMLElement {
         }
       `;
 
-    shadow.appendChild(div);
-    shadow.appendChild(style);
+    this.shadow.appendChild(div);
+    this.shadow.appendChild(style);
 
     //cada vez que se redibuje toda la pantalla vuelvo a escuchar
     //los listeners

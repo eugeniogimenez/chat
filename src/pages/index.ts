@@ -45,6 +45,7 @@ class Home extends HTMLElement {
       
         <div class="home_form">
           <h1 class='h1'>Bienvenidos</h1>
+
           <form class="form">
               <div class="">
                   <label>Tu nombre</label>
@@ -52,6 +53,7 @@ class Home extends HTMLElement {
               <input type="text" name="nombre">
               <button>Comenzar</button>
           </form>
+          
         </div>
 
       </div>
