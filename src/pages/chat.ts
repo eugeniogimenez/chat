@@ -38,12 +38,21 @@ class ChatPage extends HTMLElement {
     state.subscribe(() => {
       const currentState = state.getState();
       this.messages = currentState.messages;
+
       this.shadow.firstChild?.remove();
+      // this.render();
+      // console.log("render del subscribe");
+
+      // if (this.shadow.firstChild) {
+      //   this.shadow.firstChild.remove();
+      // }
       this.render();
+      console.log("render del subscribe");
     });
 
-    // this.shadow.firstChild?.remove();
+    this.shadow.firstChild?.remove();
     this.render();
+    console.log("render del connectedCallback");
   }
 
   addListener() {
@@ -72,16 +81,17 @@ class ChatPage extends HTMLElement {
         //   this.shadow.removeChild(this.shadow.children["new-message"]);
         // }
 
-        if (this.shadow) {
-          this.shadow.firstChild.remove();
-
-          // this.render();
-        }
+        this.shadow.firstChild?.remove();
+        // this.render();
+        // console.log("soy render del pushMessage");
       });
     });
   }
   //map() = devuelve la lista de elementos originales transformada
   render() {
+    const currentState = state.getState();
+    this.messages = currentState.messages;
+
     const div = document.createElement("div");
     const style = document.createElement("style");
     div.className = "chat";
@@ -148,6 +158,7 @@ class ChatPage extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          
         }
   
         .h1 {
@@ -157,7 +168,9 @@ class ChatPage extends HTMLElement {
         .messages{
           background-color: red;
           margin: 0 auto;
-          width: 100%;
+          // width: 100%;
+          height: 300px;
+          overflow: auto;
         }
 
         .submit-message{
@@ -165,6 +178,7 @@ class ChatPage extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: center;
+          
         }
   
         input {
