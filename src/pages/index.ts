@@ -3,12 +3,6 @@ import { Router } from "@vaadin/router";
 import { state } from "../state";
 
 class Home extends HTMLElement {
-  //el contenido del elemento es renderizado (construido) en connectedCallback.
-  //¿Por qué no en el constructor?
-  //porque cuando el constructor es llamado, es aún demasiado pronto.
-  //El elemento es creado, pero el navegador aún no procesó ni asignó atributos
-  //en este estado, entonces las llamadas a getAttribute devolverían null.
-  //Así que no podemos renderizar (construirlo) ahora.
   connectedCallback() {
     this.render();
 
@@ -21,6 +15,7 @@ class Home extends HTMLElement {
 
       //Le paso el nombre que ingresaron en el formulario
       state.setNombre(target.nombre.value);
+
       //go() es una funcion del Router para ir a...
       Router.go("/chat");
     });

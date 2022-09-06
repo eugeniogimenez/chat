@@ -77,7 +77,7 @@ const state = {
   //Le manda al Backend el mensaje nuevo
   //La rtdb
   //Mezclo un dato nuevo, el message, con un dato que tenia: nombre.
-  pushMessage(message: string, callback) {
+  pushMessage(message: string) {
     console.log("soy state.pushMessage(message), y mi mensaje es: ", message);
 
     const nombreQueGuardeEnElState = this.data.nombre;
@@ -91,8 +91,6 @@ const state = {
         message: message,
       }),
     });
-
-    callback ? callback() : false;
   },
   ///
 

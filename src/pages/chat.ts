@@ -3,54 +3,23 @@
 import { state } from "../state";
 
 type Message = {
-  from: string; //quien manda el mensaje
+  from: string;
   message: string;
 };
 
 class ChatPage extends HTMLElement {
-  //el contenido del elemento es renderizado (construido) en connectedCallback.
-  //¿Por qué no en el Constructor?
-  //porque cuando el Constructor es llamado, es aún demasiado pronto.
-  //El elemento es creado, pero el navegador aún no procesó ni asignó atributos
-  //en este estado, entonces las llamadas a getAttribute devolverían null.
-  //Así que no podemos renderizar (construirlo) ahora.
-
-  //creo una variable (array de objetos) para engancharme al state (los cambios)
-  //cada vez que haya mensajes, los guardo acá, en el messages.
-  // tiene que arrancar con un array vacio para que no falle.
-  shadow: ShadowRoot;
   messages: Message[] = [];
   connectedCallback() {
     console.log("CHAAAAAATTTTT");
 
-    this.shadow = this.attachShadow({ mode: "open" });
-    // const currentState = state.getState();
-
-    // //los mensajes del chat, van a ser los guardados en el state.
-    // this.messages = currentState.messages;
-    // console.log("currentState.messages: ", currentState.messages);
-
-    //cuando ya tenemos los mensajes actualizados,
-    //los renderizamos (construimos) again
-    //pero esta vez, con datos actuailzados.
-
-    // this.render();
     state.subscribe(() => {
       const currentState = state.getState();
       this.messages = currentState.messages;
 
-      this.shadow.firstChild?.remove();
-      // this.render();
-      // console.log("render del subscribe");
-
-      // if (this.shadow.firstChild) {
-      //   this.shadow.firstChild.remove();
-      // }
       this.render();
       console.log("render del subscribe");
     });
 
-    this.shadow.firstChild?.remove();
     this.render();
     console.log("render del connectedCallback");
   }
@@ -58,45 +27,26 @@ class ChatPage extends HTMLElement {
   addListener() {
     console.log("EN EL chat.addListener()");
 
-    const currentState = state.getState();
-
-    const form = this.shadow.querySelector(".submit-message");
+    const form = this.querySelector(".submit-message");
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const target = e.target as any;
+
       //como la clase es -
       //se la paso entre []
-      //en vez de e.target.new-message, le digo e.target['new-message']
-
-      //   );
-      //Le doy al state el mensaje del chat
-
-      state.pushMessage(target["new-message"].value, () => {
-        console.log("MENSAJE PUSHEADO");
-        console.log("this.messages: ", this.messages);
-        console.log("currentState.messages: ", currentState.messages);
-
-        // if (this.messages.length == currentState.messages.length) {
-        //   this.shadow.removeChild(this.shadow.children["new-message"]);
-        // }
-
-        this.shadow.firstChild?.remove();
-        // this.render();
-        // console.log("soy render del pushMessage");
-      });
+      state.pushMessage(target["new-message"].value);
     });
   }
-  //map() = devuelve la lista de elementos originales transformada
+
   render() {
     const currentState = state.getState();
     this.messages = currentState.messages;
 
-    const div = document.createElement("div");
     const style = document.createElement("style");
-    div.className = "chat";
+    this.className = "chat";
 
-    div.innerHTML = `
+    this.innerHTML = `
     <div class="home">
 
       <div class="home_header"></div>
@@ -194,8 +144,7 @@ class ChatPage extends HTMLElement {
         }
       `;
 
-    this.shadow.appendChild(div);
-    this.shadow.appendChild(style);
+    this.appendChild(style);
 
     //cada vez que se redibuje toda la pantalla vuelvo a escuchar
     //los listeners
