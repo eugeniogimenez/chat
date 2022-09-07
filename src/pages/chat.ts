@@ -16,10 +16,13 @@ class ChatPage extends HTMLElement {
       const currentState = state.getState();
       this.messages = currentState.messages;
 
+      //este this.render() se activa cada vez que reinicia
+      //es decir, después de ingresar una nueva palabra/frase al chat.
       this.render();
       console.log("render del subscribe");
     });
 
+    //este this.render() se activa al iniciar
     this.render();
     console.log("render del connectedCallback");
   }
@@ -28,6 +31,7 @@ class ChatPage extends HTMLElement {
     console.log("EN EL chat.addListener()");
 
     const form = this.querySelector(".submit-message");
+    const messages = this.querySelector(".messages");
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -37,6 +41,8 @@ class ChatPage extends HTMLElement {
       //se la paso entre []
       state.pushMessage(target["new-message"].value);
     });
+
+    messages.scrollTop = messages.scrollHeight;
   }
 
   render() {
@@ -66,7 +72,7 @@ class ChatPage extends HTMLElement {
           </div>
 
           <form class="submit-message">
-              <input type="text" name='new-message'>
+              <input type="text" name='new-message' class='input'>
               <button>Enviar</button>
           </form>
         </div>
@@ -89,19 +95,23 @@ class ChatPage extends HTMLElement {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          padding: 10px;
         }
   
         .home_form{
+          border: solid;
           display: flex;
           flex-direction: column;
           justify-content: center;
           margin: 0 auto;
+          width: 100%;
         }
   
         .home_header {
           background-color: #FF8282;
           height: 60px;
           width: 100%;
+          border:solid;
         }
   
         .form {
@@ -118,7 +128,7 @@ class ChatPage extends HTMLElement {
         .messages{
           background-color: red;
           margin: 0 auto;
-          // width: 100%;
+          width: 100%;
           height: 300px;
           overflow: auto;
         }
@@ -128,17 +138,19 @@ class ChatPage extends HTMLElement {
           display: flex;
           flex-direction: column;
           justify-content: center;
-          
+          align-items: center;
+          margin: 10px auto;
         }
   
         input {
-          width: 303px;
+          width: 75%;
           height: 55px;
+          
           margin-bottom: 16px;
         }
   
         button {
-          width: 312px;
+          width: 75%;
           height: 55px;
           background-color: #9CBBE9;
         }

@@ -28,30 +28,17 @@ const state = {
     //esto lo vamos a enchufar al State para que le avise a los Components
     //escuchamos si hay algun cambio en el chat.
     chatroomsRef.on("value", (snapshot) => {
-      const messageFromServer = snapshot.val();
-      console.log(
-        "En init(), messageFromServer.messages: ",
-        messageFromServer.messages
-      );
+      console.log("en chatroomsRef.on de state.init()");
 
-      // for (const i in messageFromServer.messages) {
-      //   console.log(
-      //     "messageFromServer.messages[i].message ",
-      //     messageFromServer.messages[i].message
-      //   );
-      // }
+      const messageFromServer = snapshot.val();
+
       //Cada vez que en el Server haya un cambio en .general
       //actualizamos el state
-
       const messagesList = _.map(messageFromServer.messages);
-      console.log("En init(), messagesList: ", messagesList);
-      // map(messageFromServer.messages, (i) => {
-      //   return console.log(i.messages);
-      // });
-      currentState.messages = messagesList; //los mensajes del servidor van a ser los mios
 
-      console.log("En init(), currentState: ", currentState);
-      // console.log("En init(), messagesList: ", messagesList);
+      currentState.messages = messagesList; //los mensajes del servidor van a ser los mios
+      console.log("messagesList en state.init(): ", messagesList);
+
       this.setState(currentState);
     });
   },
@@ -99,6 +86,7 @@ const state = {
 
     for (const i of this.listeners) {
       i();
+      console.log("soy i en this.listers: ", i);
     }
 
     console.log("Soy state.setState(newState) y mi newState es: ", newState);
