@@ -20,6 +20,11 @@ class ChatPage extends HTMLElement {
       //es decir, después de ingresar una nueva palabra/frase al chat.
       this.render();
       console.log("render del subscribe");
+
+      const mensajeDe = this.getAttribute("mensajeDe");
+      console.log("soy mensajeDe: ", mensajeDe);
+
+      this.checkMessageAuthor(mensajeDe);
     });
 
     //este this.render() se activa al iniciar
@@ -45,6 +50,23 @@ class ChatPage extends HTMLElement {
     messages.scrollTop = messages.scrollHeight;
   }
 
+  //  chequeamos autor
+  checkMessageAuthor(author) {
+    console.log("soy checkMessageAuthor y mi author es: ", author);
+
+    const currentState = state.getState();
+    const currentUser = currentState.nombre;
+
+    const messageEl = this.querySelector(".message");
+
+    if (author == currentUser) {
+      messageEl.classList.add("autor"); //activado
+    } else if (author !== currentUser) {
+      messageEl.classList.add("autor");
+      return console.log("Soy el otro usuario");
+    }
+  }
+
   render() {
     const currentState = state.getState();
     this.messages = currentState.messages;
@@ -66,7 +88,7 @@ class ChatPage extends HTMLElement {
           <div class="messages">
               ${this.messages
                 .map((cadaMensaje) => {
-                  return `<div class="message">${cadaMensaje.from}:  ${cadaMensaje.message}</div>`;
+                  return `<div class="message" mensajeDe='${cadaMensaje.from}'>${cadaMensaje.from}:  ${cadaMensaje.message}</div>`;
                 })
                 .join("")}
           </div>
@@ -84,6 +106,10 @@ class ChatPage extends HTMLElement {
         `;
 
     style.innerHTML = `
+
+        .autor {
+          color: green;
+        }
         .home {
           display: flex;
           flex-direction: column;
