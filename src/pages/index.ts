@@ -58,6 +58,12 @@ class Home extends HTMLElement {
       `;
 
     style.innerHTML = `
+      *{
+        margin: 0;
+        padding: 0; 
+        box-sizing: border-box;
+      }
+
       .home {
         display: flex;
         flex-direction: column;
@@ -87,23 +93,27 @@ class Home extends HTMLElement {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        
       }
 
       .h1 {
         font-size: 52px;
+        margin-top: 16px;
+        margin-bottom: 26px;
       }
+
       label{
         font-size: 24px;
       }
 
       input {
-        width: 303px;
+        width: 100%;
         height: 55px;
         margin-bottom: 16px;
       }
 
       button {
-        width: 312px;
+        width: 100%;
         height: 55px;
         background-color: #9CBBE9;
       }

@@ -1,14 +1,11 @@
-//FRONTEND/CLIENT:
-//Solo puede "escuchar"
-
-//Importo los CustomElements
+//Import CustomElements
 import "./pages/index";
 import "./pages/chat";
 
-//importo el router
+//import router
 import "./router";
 
-//importo state
+//import state
 import { state } from "./state";
 
 (function () {

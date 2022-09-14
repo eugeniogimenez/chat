@@ -3,11 +3,6 @@ import _ from "lodash";
 
 const API_BASE_URL = "http://localhost:3000";
 
-// type Message = {
-//   from: string; //quien manda el mensaje
-//   message: string;
-// };
-
 const state = {
   data: {
     nombre: "",
@@ -47,7 +42,6 @@ const state = {
     return this.data;
   },
 
-  ///agrego
   setNombre(nombre: string) {
     console.log(
       "Soy state.setNombre(nombre), y el nombre recibido es: ",
@@ -86,7 +80,6 @@ const state = {
 
     for (const i of this.listeners) {
       i();
-      console.log("soy i en this.listers: ", i);
     }
 
     console.log("Soy state.setState(newState) y mi newState es: ", newState);

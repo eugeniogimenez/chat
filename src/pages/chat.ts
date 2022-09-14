@@ -1,5 +1,3 @@
-//importo state
-
 import { state } from "../state";
 
 type Message = {
@@ -9,9 +7,8 @@ type Message = {
 
 class ChatPage extends HTMLElement {
   messages: Message[] = [];
-  connectedCallback() {
-    console.log("CHAAAAAATTTTT");
 
+  connectedCallback() {
     state.subscribe(() => {
       const currentState = state.getState();
       this.messages = currentState.messages;
@@ -21,15 +18,16 @@ class ChatPage extends HTMLElement {
       this.render();
       console.log("render del subscribe");
 
-      const mensajeDe = this.getAttribute("mensajeDe");
-      console.log("soy mensajeDe: ", mensajeDe);
-
-      this.checkMessageAuthor(mensajeDe);
+      const messages = this.querySelector(".messages");
+      messages.scrollTop = messages.scrollHeight;
     });
 
     //este this.render() se activa al iniciar
     this.render();
     console.log("render del connectedCallback");
+
+    const messages = this.querySelector(".messages");
+    messages.scrollTop = messages.scrollHeight;
   }
 
   addListener() {
@@ -48,23 +46,6 @@ class ChatPage extends HTMLElement {
     });
 
     messages.scrollTop = messages.scrollHeight;
-  }
-
-  //  chequeamos autor
-  checkMessageAuthor(author) {
-    console.log("soy checkMessageAuthor y mi author es: ", author);
-
-    const currentState = state.getState();
-    const currentUser = currentState.nombre;
-
-    const messageEl = this.querySelector(".message");
-
-    if (author == currentUser) {
-      messageEl.classList.add("autor"); //activado
-    } else if (author !== currentUser) {
-      messageEl.classList.add("autor");
-      return console.log("Soy el otro usuario");
-    }
   }
 
   render() {
@@ -88,7 +69,7 @@ class ChatPage extends HTMLElement {
           <div class="messages">
               ${this.messages
                 .map((cadaMensaje) => {
-                  return `<div class="message" mensajeDe='${cadaMensaje.from}'>${cadaMensaje.from}:  ${cadaMensaje.message}</div>`;
+                  return `<div class="message" mensajeDe='${cadaMensaje.from}'>${cadaMensaje.message}</div>`;
                 })
                 .join("")}
           </div>
@@ -106,10 +87,12 @@ class ChatPage extends HTMLElement {
         `;
 
     style.innerHTML = `
-
-        .autor {
-          color: green;
+        *{
+          margin: 0;
+          padding: 0; 
+          box-sizing: border-box;
         }
+
         .home {
           display: flex;
           flex-direction: column;
@@ -125,7 +108,6 @@ class ChatPage extends HTMLElement {
         }
   
         .home_form{
-          border: solid;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -137,7 +119,6 @@ class ChatPage extends HTMLElement {
           background-color: #FF8282;
           height: 60px;
           width: 100%;
-          border:solid;
         }
   
         .form {
@@ -149,14 +130,42 @@ class ChatPage extends HTMLElement {
   
         .h1 {
           font-size: 52px;
+          margin: 0 0 20px;
         }
 
         .messages{
-          background-color: red;
           margin: 0 auto;
           width: 100%;
-          height: 300px;
+          height: 370px;
           overflow: auto;
+          overflow-x: hidden;
+          overflow-y: hidden;
+        }
+
+        .mensajes-sent {
+          display: flex;
+          max-width: 75%;
+          margin: 2px 0 2px auto;
+
+          background-color: #B9E97C;
+          font-size: 18px;
+          padding: 10px;
+          margin-bottom: 12px;
+          min-height: 20px;
+          border-radius: 20px 20px 20px 20px;
+        }
+
+        .mensajes-received {
+          display: flex;
+          max-width: 75%;
+
+          background-color: #D8D8D8;
+          font-size: 18px;
+          padding: 10px;
+          margin-bottom: 12px;
+          min-height: 20px;
+          border-radius: 20px 20px 20px 20px;
+          
         }
 
         .submit-message{
@@ -187,6 +196,20 @@ class ChatPage extends HTMLElement {
     //cada vez que se redibuje toda la pantalla vuelvo a escuchar
     //los listeners
     this.addListener();
+
+    //  chequeamos autor
+    const messages = this.querySelectorAll(".message");
+    const currentUser = currentState.nombre;
+
+    messages.forEach((message) => {
+      const autor = message.getAttribute("mensajeDe");
+
+      if (autor == currentUser) {
+        message.classList.add("mensajes-sent"); //activado
+      } else if (autor !== currentUser) {
+        message.classList.add("mensajes-received");
+      }
+    });
   }
 }
 
